@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ORM>
+  <Project name="" namespace="" type="">
+    <Connection provider="" datasource="" initialcatalog="" user="" password="" trustedConnection=""></Connection>
+    <Tables>
+      <Table name="" type="" dtoName="">
+        <Columns>
+          <Column name="" dbType="" required="" size="" precision="" defaultValue="" isIdentity="" isPK="" isUniqueKey="" relatedTable="">
+            <DTO name="" dataType="" useAsLabel="" selectionType="" />
+          </Column>
+        </Columns>
+      </Table>
+    </Tables>
+    <Procedures>
+      <Procedure name="" resultType="" useResultAsDTO="" useParamAsDTO="">
+        <InputParameters>
+          <parameter name="" dbType="" size="" precision="" required="" defaultValue=""></parameter>
+        </InputParameters>
+        <OutputParameters>
+          <parameter name="" dbType="" size="" precision="" required="" defaultValue="" isParameter=""></parameter>
+        </OutputParameters>
+      </Procedure>
+    </Procedures>
+  </Project>
+</ORM>

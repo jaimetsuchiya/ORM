@@ -1,0 +1,132 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{7551DCD4-8C98-4AC0-A8E1-1993E5F81E52}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SWBrasil.ORM.CommandTemplate</RootNamespace>
+    <AssemblyName>SWBrasil.ORM.CommandTemplate</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.8.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Angular+Light\AngularController.cs" />
+    <Compile Include="Angular+Light\AngularTestCases.cs" />
+    <Compile Include="Ecms\EcmsMVCController.cs" />
+    <Compile Include="Ecms\EcmsListPage.cs" />
+    <Compile Include="Angular+Light\AngularMVCController.cs" />
+    <Compile Include="Angular+Light\AngularDetailPage.cs" />
+    <Compile Include="Angular+Light\AngularSearchWidgetController.cs" />
+    <Compile Include="Angular+Napier\AngularNapier01.cs" />
+    <Compile Include="Ecms\EcmsViewModel.cs" />
+    <Compile Include="Ecms\EcmsNapierBaseModel.cs" />
+    <Compile Include="Ecms\EcmsFacade.cs" />
+    <Compile Include="MarketPlace\MarketPlaceTemplate01.cs" />
+    <Compile Include="Ecms\EcmsTemplate01.cs" />
+    <Compile Include="Angular+Light\AngularTemplate01.cs" />
+    <Compile Include="BaseProject.cs" />
+    <Compile Include="Ecms\EcmsNapierModel.cs" />
+    <Compile Include="Angular+Light\SimpleInjector.cs" />
+    <Compile Include="CommandBase.cs" />
+    <Compile Include="Genericos\BSProcedures.cs" />
+    <Compile Include="Angular+Light\BusinessInterfaces.cs" />
+    <Compile Include="Angular+Light\AngularSearchWidget.cs" />
+    <Compile Include="Angular+Light\DTOLightModel.cs" />
+    <Compile Include="Genericos\LightAbstractModel.cs" />
+    <Compile Include="Genericos\NapierDTOModel.cs" />
+    <Compile Include="Angular+Light\LightModel.cs" />
+    <Compile Include="Angular+Light\AngularListPage.cs" />
+    <Compile Include="Genericos\WidgetFormMethod.cs" />
+    <Compile Include="Genericos\CRUDServiceProxy.cs" />
+    <Compile Include="Genericos\SearchArguments.cs" />
+    <Compile Include="Angular+Light\ImplementationLightClass.cs" />
+    <Compile Include="Genericos\JQueryDataTable.cs" />
+    <Compile Include="Genericos\FacadeClass.cs" />
+    <Compile Include="Genericos\DTONapierModel.cs" />
+    <Compile Include="Genericos\CRUDProcedures.cs" />
+    <Compile Include="Genericos\HtmlInputForm.cs" />
+    <Compile Include="Genericos\NapierModel.cs" />
+    <Compile Include="Genericos\NapierXML.cs" />
+    <Compile Include="TJInterior\Model.cs" />
+    <Compile Include="TJInterior\Controller.cs" />
+    <Compile Include="TJInterior\Procedure.cs" />
+    <Compile Include="TJInterior\Repository.cs" />
+    <Compile Include="TJInterior\Service.cs" />
+    <Compile Include="TJInterior\TJInterior.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Genericos\RESTController.cs" />
+    <Compile Include="Genericos\SimpleModel.cs" />
+    <Compile Include="Templates.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Templates.settings</DependentUpon>
+    </Compile>
+    <Compile Include="TJInterior\ViewModel.cs" />
+    <Compile Include="TJInterior\View.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SWBrasil.ORM.Common\SWBrasil.ORM.Common.csproj">
+      <Project>{e48d7bbe-072d-4dc4-9f41-6fd88739a86d}</Project>
+      <Name>SWBrasil.ORM.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+    <None Include="Templates.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Templates.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,417 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="SWBrasil.ORM.CommandTemplate" GeneratedClassName="Templates">
+  <Profiles />
+  <Settings>
+    <Setting Name="Procedure_Select" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">
+SELECT 
+	{0}
+FROM
+	{1}
+WHERE
+	{2}</Value>
+    </Setting>
+    <Setting Name="Procedure_Delete" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">DELETE FROM {0} WHERE {1}</Value>
+    </Setting>
+    <Setting Name="Procedure_Base" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">IF EXISTS ( SELECT 1 FROM sys.objects WHERE type='P' AND name='{0}')
+	DROP PROC {0}
+GO
+
+
+CREATE PROC dbo.{0} 
+(
+	{1}
+	,@AbreTransacao		char(1)		= 'N'
+	,@CodigoRetorno		int			=  0	output
+	,@DescricaoRetorno	varchar(max)= ''	output
+) AS
+BEGIN
+
+	DECLARE @TransacaoAberta char(1)
+		SET @TransacaoAberta = 'N'
+
+	BEGIN TRY
+
+		IF @AbreTransacao = 'S'
+		BEGIN
+			BEGIN TRAN 
+			SET @TransacaoAberta = 'S'
+		END
+
+
+		{2}
+
+
+		SELECT 	 @CodigoRetorno		= 0
+				,@DescricaoRetorno	= ''
+
+
+		IF @TransacaoAberta = 'S'
+		BEGIN
+			COMMIT TRAN
+			SET @TransacaoAberta = 'N'
+		END
+
+	END TRY
+	BEGIN CATCH
+
+		SELECT 	 @CodigoRetorno		= -9
+				,@DescricaoRetorno	= 'Erro de Processamento'
+				
+
+		IF @TransacaoAberta = 'S'
+		BEGIN
+			ROLLBACK TRAN
+			SET @TransacaoAberta = 'N'
+		END
+
+	END CATCH
+
+END
+GO
+</Value>
+    </Setting>
+    <Setting Name="Procedure_Save" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">
+--SAVE
+IF EXISTS( SELECT 1 FROM {0} WHERE {1})
+BEGIN
+
+	UPDATE
+		{0}
+	SET
+		{2}
+	WHERE
+		{1}
+
+END
+ELSE
+BEGIN
+
+	INSERT
+		INTO {0}
+		(
+			{3}
+		)
+		VALUES
+		(
+			{4}
+		)
+
+	{5}
+
+END</Value>
+    </Setting>
+    <Setting Name="NapierModel" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">using System;
+using Napier.Data;
+using Napier.Mapper;
+
+namespace {3}.Data.Models
+{
+	[MapperClass(Storable = "{0}")]
+    public class {4} : DataAccessLibrary
+    {
+        
+{1}
+
+        #	region Persistence Methods
+
+        public new int Save()
+        {
+            return base.Save();
+        }
+
+        public new int Delete()
+        {
+            return base.Delete();
+        }
+
+        #endregion Persistence Methods
+		
+		#region Search Methods
+		
+{2}
+
+		#endregion Search Methods
+    }
+}
+</Value>
+    </Setting>
+    <Setting Name="Napier_Execution_XML" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-8" ?&gt;
+&lt;Objects&gt;
+&lt;Storable name="{0}"&gt;
+    &lt;Execution cod="SEL"&gt;
+      &lt;Summary&gt;SEL Summary&lt;/Summary&gt;
+      &lt;Table&gt;{0}&lt;/Table&gt;
+      &lt;Inputs&gt;
+{1}
+      &lt;/Inputs&gt;
+    &lt;/Execution&gt;
+    &lt;Execution cod="INS"&gt;
+      &lt;Summary&gt;INS Summary&lt;/Summary&gt;
+      &lt;Table&gt;{0}&lt;/Table&gt;
+      &lt;Inputs&gt;
+{2}
+      &lt;/Inputs&gt;
+    &lt;/Execution&gt;
+    &lt;Execution cod="UPD"&gt;
+      &lt;Summary&gt;UPD Summary&lt;/Summary&gt;
+      &lt;Table&gt;{0}&lt;/Table&gt;
+      &lt;Inputs&gt;
+{1}
+      &lt;/Inputs&gt;
+    &lt;/Execution&gt;
+    &lt;Execution cod="DEL"&gt;
+      &lt;Summary&gt;DEL Summary&lt;/Summary&gt;
+      &lt;Table&gt;{0}&lt;/Table&gt;
+      &lt;Inputs&gt;
+{3}
+      &lt;/Inputs&gt;
+    &lt;/Execution&gt;
+  &lt;/Storable&gt;
+&lt;/Objects&gt;
+
+</Value>
+    </Setting>
+    <Setting Name="HtmlInput" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">
+&lt;div class="form-group"&gt;
+	&lt;label for="{0}"&gt;{0}&lt;/label&gt;&lt;br /&gt;
+	&lt;input value="@Model.{0}" type="text" id="{0}" name="{0}"  class="form-control" {1} /&gt;
+&lt;/div&gt;
+</Value>
+    </Setting>
+    <Setting Name="DTOModel" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace {3}.Common
+{
+	[NapierClassMapper("{2}")]
+	public class {0}
+	{
+		{1}
+	}
+}
+</Value>
+    </Setting>
+    <Setting Name="RESTController" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Web.Http;
+using System.Web.Http.Description;
+using WebApi.OutputCache.V2;
+
+using {NAMESPACE}.Core;
+using {NAMESPACE}.Data;
+using {NAMESPACE}.Service.Infrastructure;
+using {NAMESPACE}.Service.Models;
+using {NAMESPACE}.Common;
+using {NAMESPACE}.Common.Integration;
+
+
+namespace {NAMESPACE}.Service.Controllers
+{
+	public class {GROUP}Controller : BaseController
+    {
+	
+		#region CRUD {TABLE_NAME}
+		
+        [HttpGet]
+        [Route("api/{GROUP}/{TABLE_NAME}/{id}")]
+        [ResponseType(typeof(OutputTransport&lt;{TABLE_NAME}DTO&gt;))]
+        [TokenValidation]
+        public HttpResponseMessage Get{TABLE_NAME}(object id)
+        {
+            OutputTransport&lt;{TABLE_NAME}DTO&gt; ret = new OutputTransport&lt;{TABLE_NAME}DTO&gt;();
+            ret.Data = _{TABLE_NAME}BO.FindById(id);
+
+            return Request.CreateResponse&lt;OutputTransport&lt;{TABLE_NAME}DTO&gt;&gt;(HttpStatusCode.OK, ret);
+        }
+
+		
+        [HttpPost]
+        [Route("api/{GROUP}/{TABLE_NAME}/Search")]
+        [ResponseType(typeof(OutputTransport&lt;List&lt;{TABLE_NAME}DTO&gt;&gt;))]
+        [TokenValidation]
+        public HttpResponseMessage Search{TABLE_NAME}s({TABLE_NAME}Args args)
+        {
+            OutputTransport&lt;List&lt;{TABLE_NAME}DTO&gt;&gt; ret = new OutputTransport&lt;List&lt;{TABLE_NAME}DTO&gt;&gt;();
+            ret.Data = _{TABLE_NAME}BO.Search(args);
+
+            return Request.CreateResponse&lt;OutputTransport&lt;List&lt;{TABLE_NAME}DTO&gt;&gt;&gt;(HttpStatusCode.OK, ret);
+        }
+		
+		
+        [HttpPost]
+        [Route("api/{GROUP}/{TABLE_NAME}")]
+        [ResponseType(typeof(OutputTransport&lt;{TABLE_NAME}DTO&gt;))]
+        [TokenValidation]
+		[ModelValidationHandling()]
+        public HttpResponseMessage Save{TABLE_NAME}({TABLE_NAME}DTO model)
+        {
+            OutputTransport&lt;{TABLE_NAME}DTO&gt; ret = new OutputTransport&lt;{TABLE_NAME}DTO&gt;();
+			ret = _{TABLE_NAME}BO.Salvar(new InputTransport&lt;{TABLE_NAME}DTO&gt;() { Data = model, UserName = base.UserInfo.logon });
+
+            return Request.CreateResponse&lt;OutputTransport&lt;{TABLE_NAME}DTO&gt;&gt;(HttpStatusCode.OK, ret);
+        }
+
+		#endregion CRUD
+	}
+}
+</Value>
+    </Setting>
+    <Setting Name="PROXYMethods" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Linq;
+using System.Net.Http;
+using System.Web;
+using {NAMESPACE}.Common;
+
+namespace {NAMESPACE}.Web.UI.WebApiProxy
+{
+    public class {TABLE_NAME}Proxy : BaseProxy
+	{
+		public OutputTransport&lt;{TABLE_NAME}DTO&gt; Get{TABLE_NAME}(object id)
+		{
+			OutputTransport&lt;{TABLE_NAME}DTO&gt; ret = new OutputTransport&lt;{TABLE_NAME}DTO&gt;();
+			string  uri = base.ServiceBaseURI("ServiceURI.{GROUP}");
+			uri += "{TABLE_NAME}";
+
+			string content = DoRequest(uri, "GET", null);
+			if (string.IsNullOrEmpty(content) == false)
+				ret = JsonConvert.DeserializeObject&lt;OutputTransport&lt;{TABLE_NAME}DTO&gt;&gt;(content);
+			else
+				ret.Code = -100;
+
+			return ret;
+		}	
+		
+		public OutputTransport&lt;{TABLE_NAME}DTO&gt; Search{TABLE_NAME}({TABLE_NAME}Args args)
+		{
+			string jsonString = JsonConvert.SerializeObject(args);
+			StringContent strContent = new StringContent(jsonString, System.Text.Encoding.UTF8, "application/json");
+
+			OutputTransport&lt;{TABLE_NAME}DTO&gt; ret = new OutputTransport&lt;{TABLE_NAME}DTO&gt;();
+			string  uri = base.ServiceBaseURI("ServiceURI.{GROUP}");
+			uri += "{TABLE_NAME}/Search";
+
+			string content = DoRequest(uri, "POST", strContent);
+			if (string.IsNullOrEmpty(content) == false)
+				ret = JsonConvert.DeserializeObject&lt;OutputTransport&lt;{TABLE_NAME}DTO&gt;&gt;(content);
+			else
+				ret.Code = -100;
+
+			return ret;
+		}	
+		
+		public OutputTransport&lt;{TABLE_NAME}DTO&gt; Save{TABLE_NAME}({TABLE_NAME}DTO model)
+		{
+			string jsonString = JsonConvert.SerializeObject(model);
+			StringContent strContent = new StringContent(jsonString, System.Text.Encoding.UTF8, "application/json");
+
+			OutputTransport&lt;{TABLE_NAME}DTO&gt; ret = new OutputTransport&lt;{TABLE_NAME}DTO&gt;();
+			string  uri = base.ServiceBaseURI("ServiceURI.{GROUP}");
+			uri += "{TABLE_NAME}";
+
+			string content = DoRequest(uri, "POST", strContent);
+			if (string.IsNullOrEmpty(content) == false)
+			{
+					try
+					{
+						OutputTransport&lt;{TABLE_NAME}DTO&gt; ret = JsonConvert.DeserializeObject&lt;OutputTransport&lt;{TABLE_NAME}DTO&gt;&gt;(content);
+						return ret;
+					}
+					catch
+					{
+						OutputTransport&lt;string&gt; tmp = JsonConvert.DeserializeObject&lt;OutputTransport&lt;string&gt;&gt;(content);
+						return new OutputTransport&lt;{TABLE_NAME}DTO&gt;() { Code = tmp.Code, Message = tmp.Message + "\n" + tmp.Data };
+					}
+				}
+			else
+				ret.Code = -10;
+
+			return ret;
+		}	
+	}
+}
+</Value>
+    </Setting>
+    <Setting Name="ListPage" Type="System.String" Scope="User">
+      <Value Profile="(Default)">@{
+    ViewBag.Title = "Cadastro de {TABLE_NAME}";
+}
+
+&lt;div class="panel panel-default" &gt;
+    &lt;div class="panel-heading"&gt;
+        &lt;h3 class="panel-title"&gt;Cadastro de {TABLE_NAME}&lt;/h3&gt;
+        &lt;ul class="panel-controls"&gt;
+            &lt;li&gt;&lt;a href="#" class="panel-fullscreen"&gt;&lt;span class="fa fa-expand"&gt;&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+            &lt;li&gt;&lt;a href="#" class="panel-collapse"&gt;&lt;span class="fa fa-angle-down"&gt;&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+    &lt;/div&gt;
+    &lt;!-- /.panel-heading --&gt;
+    &lt;div class="panel-body"&gt;
+        &lt;br /&gt;&lt;br /&gt;
+
+        &lt;div class="tab-container col-sm-12"&gt;
+	        &lt;ul class="nav nav-tabs" style="margin-left:0px;"&gt;
+		        &lt;li class="active"&gt;&lt;a href="#home" data-toggle="tab"&gt;Critérios para Pesquisa&lt;/a&gt;&lt;/li&gt;
+		        &lt;li&gt;&lt;a href="#resultado" data-toggle="tab"&gt;Resultado da Pesquisa&lt;/a&gt;&lt;/li&gt;
+	        &lt;/ul&gt;
+	        &lt;div class="tab-content" style="margin-top:-10px;"&gt;
+		        &lt;div class="tab-pane active cont" id="home" style="height:200px;"&gt;
+                    &lt;form id="frmCriterios"&gt;
+						@{Html.RenderAction("{TABLE_NAME}Form", "Widget");}
+                    &lt;/form&gt;
+					&lt;button type="button" class="btn btn-success btn-flat" id="btnPesquisar" onclick="btnPesquisar_Click"&gt;Pesquisar&lt;/button&gt;   
+		        &lt;/div&gt;
+		        &lt;div class="tab-pane cont" id="resultado"&gt;
+                    &lt;br /&gt;&lt;br /&gt;
+					@{Html.RenderAction("{TABLE_NAME}Grid", "Widget");}
+		        &lt;/div&gt;
+	        &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div class="panel-footer"&gt;
+        &lt;button type="button" class="btn btn-success btn-flat" id="btnNovo" onclick="document.location.href='/{GROUP}/{TABLE_NAME}?id=0'"&gt;Novo {TABLE_NAME}&lt;/button&gt;   
+    &lt;/div&gt;
+&lt;/div&gt;
+
+
+@section scripts {
+
+ &lt;script type="text/javascript"&gt;
+	$(document).ready(function(){
+		{TABLE_NAME}Grid.ServiceURI = "/{GROUP}/{TABLE_NAME}/Search";
+		{TABLE_NAME}Grid.LinkURI = "/{GROUP}/{TABLE_NAME}?id=";
+		{TABLE_NAME}Grid.ExibirLink = true;
+	});
+	
+	function btnPesquisar_Click() {
+		var model = _helper.formToModel($("#frmCriterios"));
+		{TABLE_NAME} Grid.Pesquisar(model);
+		$('.nav-tabs a[href="#resultado"]').tab('show')
+	}
+			
+    &lt;/script&gt;   
+}</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
